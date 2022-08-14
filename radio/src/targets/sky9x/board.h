@@ -267,7 +267,11 @@ extern "C" {
   #define WDG_RESET()
   #define IS_RESET_REASON_WATCHDOG()   false
 #else
-  #define WDG_ENABLE(x)                WDT->WDT_MR = 0x3FFF207F
+  //#define WDG_ENABLE(x)                WDT->WDT_MR = 0x3FFF207F
+
+  // 5 second WD timeout.
+  #define WDG_ENABLE(x)                WDT->WDT_MR = 0x3FFF2500
+  
   #define WDG_RESET()                  WDT->WDT_CR = 0xA5000001
   #define IS_RESET_REASON_WATCHDOG()   ((ResetReason & RSTC_SR_RSTTYP) == (2 << 8))
 #endif

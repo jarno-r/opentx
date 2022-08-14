@@ -16,6 +16,8 @@
   * Changing to and from a model that has External RF MULTI enabled causes this.
   * Crashes always when turning radio on and changing from one MULTI model to another MULTI model. 
   * Does not crash after unexpected reboot from the first crash.
+  * Longer watchdog timeout appears to reduce crashes somewhat, but sometimes it hangs and crashes
+    even with 5s WD timeout.
 * Sometimes the radio crashes on startup and there's no splash screen and no audio.
 * Radio hangs on startup splash screen occasionally.
 * Radio hangs on shutdown splash screen occasionally.

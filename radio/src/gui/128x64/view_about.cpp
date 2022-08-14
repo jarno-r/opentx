@@ -26,7 +26,7 @@ const unsigned char about_bmp[]  = {
 
 #include "teletubbies.h"
 
-Teletubbies teletubbies;
+Teletubbies teletubbies __attribute__((section(".noinit")));
 
 void hexenNibble(char *outs, int value)
 {
@@ -135,7 +135,14 @@ void menuAboutView(event_t event)
       lcdDrawText(ABOUT_X, 30, str, SMLSIZE);
       }
 
-        lcdDrawText(ABOUT_X, 38, teletubbies.whatever, SMLSIZE);
+      {
+      char str[]="XXXX XXXX";
+      hexenWord(str, teletubbies.flags5);
+      hexenWord(str+5, teletubbies.flags6);
+      lcdDrawText(ABOUT_X, 38, str, SMLSIZE);
+      }
+
+        lcdDrawText(ABOUT_X, 46, teletubbies.whatever, SMLSIZE);
 
       screenDuration = 255;
       break;

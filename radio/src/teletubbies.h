@@ -9,6 +9,7 @@ extern "C" {
 
 typedef struct {
     int flags1,flags2,flags3,flags4;
+    int flags5,flags6;
     char whatever[21];
 } Teletubbies;
 
