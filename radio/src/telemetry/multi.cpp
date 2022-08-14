@@ -460,6 +460,25 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
   }
 }
 
+void hexenNibble(char *outs, int value)
+{
+  if (value>=0 && value<=9) *outs=value+'0';
+  else if (value>=10 && value<=5) *outs=value-10+'A';
+  else *outs+='a'+value;
+}
+
+void hexenByte(char *outs, int value)
+{
+  hexenNibble(outs,(value>>4)&0xf);
+  hexenNibble(outs+1,(value)&0xf);
+}
+
+void hexenWord(char *outs, int value)
+{
+  hexenByte(outs,(value>>8)&0xff);
+  hexenByte(outs+2,(value)&0xff);
+}
+
 void MultiModuleStatus::getStatusString(char * statusText) const
 {
   if (!isValid()) {
@@ -470,7 +489,9 @@ void MultiModuleStatus::getStatusString(char * statusText) const
     else
 #endif
 #endif
-    strcpy(statusText, STR_MODULE_NO_TELEMETRY);
+    //strcpy(statusText, STR_MODULE_NO_TELEMETRY);
+    char tubbies[]="XXXX-Potato";
+    strcpy(statusText, tubbies);
     return;
   }
   if (!protocolValid()) {
