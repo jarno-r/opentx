@@ -13,7 +13,10 @@
   * There might be some issues with SD card reading.
   * Alternatively, opentx crashes.
 * Occasional crash when changing models. [#7772](https://github.com/opentx/opentx/issues/7772).
-* Sometimes the radio starts up without splash screen. Then SD card doesn not work.
+  * Changing to and from a model that has External RF MULTI enabled causes this.
+  * Crashes always when turning radio on and changing from one MULTI model to another MULTI model. 
+  * Does not crash after unexpected reboot from the first crash.
+* Sometimes the radio crashes on startup and there's no splash screen and no audio.
 * Radio hangs on startup splash screen occasionally.
 * Radio hangs on shutdown splash screen occasionally.
 * Companion shuts down when closing a model editor window. (Not 9XR Pro specific.)
