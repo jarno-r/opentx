@@ -11,12 +11,14 @@
 
 * Audio playback often fails and requires restart to recover.
   * There might be some issues with SD card reading.
-* Changing models causes a restart and model is not changed.
+  * Alternatively, opentx crashes.
+* Occasional crash when changing models. [#7772](https://github.com/opentx/opentx/issues/7772).
 * Sometimes the radio starts up without splash screen. Then SD card doesn not work.
 * Radio hangs on startup splash screen occasionally.
 * Radio hangs on shutdown splash screen occasionally.
-* Companion shuts down when closing a model editor window.
+* Companion shuts down when closing a model editor window. (Not 9XR Pro specific.)
 * Companion messes up input channel sources.
+  * Input sources change to ???. Switches change to P1, P2 or P3. MAX might change to CYC1.
 
 *NOTE:* On an unexpected shutdown, sdInit() is not called. Then audio does not work.
 
