@@ -20,7 +20,7 @@
 * Companion messes up input channel sources.
   * Input sources change to ???. Switches change to P1, P2 or P3. MAX might change to CYC1.
 
-*NOTE:* On an unexpected shutdown, sdInit() is not called. Then audio does not work.
+*NOTE:* On an unexpected shutdown, sdInit() is not called. Then audio does not work. This is expected behaviour. (Although maybe it should fallback to tone generator?).
 
 ### Building
 ````
