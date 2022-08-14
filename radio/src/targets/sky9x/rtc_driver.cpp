@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+#include "teletubby.h"
+
 #if defined(REVX)
 // TODO change this, not the right place
 #define TWI_NONE          0
@@ -277,11 +279,15 @@ void setMFP()
 {
   MFPsetting = 0x80;
   writeMFP();
+
+  teletubby.tubby|=0x4000;
 }
 
 void clearMFP()
 {
   MFPsetting = 0;
   writeMFP();
+  
+  teletubby.tubby|=0x2000;
 }
 #endif

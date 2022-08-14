@@ -24,6 +24,41 @@
 #include "storage/modelslist.h"
 #endif
 
+#include "teletubby.h"
+
+void writeTubby()
+{
+  FRESULT result;
+  FIL tubbyFile __DMA;
+
+  memset(&tubbyFile, 0, sizeof(tubbyFile));
+
+  teletubby.tubby++;
+
+  const TCHAR * filename="/tubby.txt";
+  result = f_open(&tubbyFile, filename, FA_OPEN_ALWAYS | FA_WRITE | FA_OPEN_APPEND);
+
+  if (result != FR_OK) {
+    teletubby.tubby|=0x8000;
+  }
+
+  teletubby.tubby++;
+
+  f_printf(&tubbyFile, "We are the tubbies!\n");
+
+  f_printf(&tubbyFile, "Inversion: %d", teletubby.inversion);
+
+  for(int i=0;i<teletubby.len;i++) {
+    f_printf(&tubbyFile, "%02X '%c'\n",teletubby.box[i],teletubby.box[i]);
+  }
+
+  teletubby.tubby++;
+
+  f_close(&tubbyFile);
+
+  teletubby.tubby++;
+}
+
 // TODO find why we need this (for REGISTER at least)
 #if defined(PCBXLITE)
   #define EVT_BUTTON_PRESSED() EVT_KEY_FIRST(KEY_ENTER)
@@ -1944,6 +1979,11 @@ void menuModelSetup(event_t event)
         char statusText[64];
         getModuleStatusString(moduleIdx, statusText);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
+
+        if (teletubby.writelatch == 1) {
+          teletubby.writelatch = 2;
+          writeTubby();
+        }
         break;
       }
 #if defined(HARDWARE_INTERNAL_MODULE)

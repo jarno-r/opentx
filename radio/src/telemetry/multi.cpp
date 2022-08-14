@@ -21,6 +21,9 @@
 #include "telemetry.h"
 #include "multi.h"
 
+#include "teletubby.h"
+Teletubby teletubby;
+
 constexpr int32_t MULTI_DESIRED_VERSION = (1 << 24) | (3 << 16) | (1 << 8)  | 69;
 #define MULTI_CHAN_BITS 11
 
@@ -491,6 +494,7 @@ void MultiModuleStatus::getStatusString(char * statusText) const
 #endif
     //strcpy(statusText, STR_MODULE_NO_TELEMETRY);
     char tubbies[]="XXXX-Potato";
+    hexenWord(tubbies, teletubby.tubby);
     strcpy(statusText, tubbies);
     return;
   }
@@ -584,6 +588,13 @@ void processMultiTelemetryData(uint8_t data, uint8_t module)
   if (nowMs - lastRxTS > 15)
     setMultiTelemetryBufferState(module, NoProtocolDetected);
   lastRxTS = nowMs;
+
+  if (teletubby.writelatch==0) {
+    teletubby.box[teletubby.len++]=data;
+    if (teletubby.len>50) {
+      teletubby.writelatch=1;
+    }
+  }
   
   // debugPrintf("State: %d, byte received %02X, buflen: %d\r\n", getMultiTelemetryBufferState(module), data, rxBufferCount);
   
