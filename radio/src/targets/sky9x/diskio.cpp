@@ -28,6 +28,8 @@
 #include "opentx.h"
 #include "diskio.h"
 
+#include "teletubbies.h"
+
 #define CARD_TYPE_bmHC           (1 << 0)   /**< Bit for High-Capacity(Density) */
 #define CARD_TYPE_bmSDMMC        (0x3 << 1) /**< Bits mask for SD/MMC */
 #define CARD_TYPE_bmUNKNOWN      (0x0 << 1) /**< Bits for Unknown card */
@@ -948,6 +950,8 @@ void sdInit()
 {
   Sd_rca = 0;
   sdErrorCount = 0;
+
+  teletubbies.flags3|=0x2000;
 
   if (!SD_CARD_PRESENT()) {
     Card_state = SD_ST_EMPTY;

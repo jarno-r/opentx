@@ -390,9 +390,10 @@ void boardInit()
 
   init_SDcard();
 
-#if defined(PCBAR9X)
+// https://github.com/opentx/opentx/issues/7421
+//#if defined(PCBAR9X)
   rtcInit();
-#endif
+//#endif
 }
 
 uint8_t temperature = 0;          // Raw temp reading

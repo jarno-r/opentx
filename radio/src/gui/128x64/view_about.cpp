@@ -24,6 +24,29 @@ const unsigned char about_bmp[]  = {
 #include "about.lbm"
 };
 
+#include "teletubbies.h"
+
+Teletubbies teletubbies;
+
+void hexenNibble(char *outs, int value)
+{
+  if (value>=0 && value<=9) *outs='0'+value;
+  else if (value>=10 && value<=15) *outs=value-10+'A';
+  else *outs=value+'a';
+}
+
+void hexenByte(char *outs, int value)
+{
+  hexenNibble(outs, (value>>4)&0xf);
+  hexenNibble(outs+1, value&0xf);
+}
+
+void hexenWord(char *outs, int value)
+{
+  hexenByte(outs, (value>>8)&0xff);
+  hexenByte(outs+2, (value)&0xff);
+}
+
 enum AboutScreens {
   ABOUT_OPENTX,
   ABOUT_HARDWARE,
@@ -90,11 +113,30 @@ void menuAboutView(event_t event)
   switch (screenIndex) {
     case ABOUT_OPENTX:
     case ABOUT_END:
+    /*
       lcdDrawText(ABOUT_X, 22, STR_ABOUT_OPENTX_1, SMLSIZE);
       lcdDrawText(ABOUT_X, 30, STR_ABOUT_OPENTX_2, SMLSIZE);
       lcdDrawText(ABOUT_X, 38, STR_ABOUT_OPENTX_3, SMLSIZE);
       lcdDrawText(ABOUT_X, 46, STR_ABOUT_OPENTX_4, SMLSIZE);
       lcdDrawText(ABOUT_X, 54, STR_ABOUT_OPENTX_5, SMLSIZE);
+    */
+
+      {
+      char str[]="XXXX XXXX";
+      hexenWord(str, teletubbies.flags1);
+      hexenWord(str+5, teletubbies.flags2);
+      lcdDrawText(ABOUT_X, 22, str, SMLSIZE);
+      }
+
+      {
+      char str[]="XXXX XXXX";
+      hexenWord(str, teletubbies.flags3);
+      hexenWord(str+5, teletubbies.flags4);
+      lcdDrawText(ABOUT_X, 30, str, SMLSIZE);
+      }
+
+        lcdDrawText(ABOUT_X, 38, teletubbies.whatever, SMLSIZE);
+
       screenDuration = 255;
       break;
 

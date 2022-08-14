@@ -21,6 +21,8 @@
 #include "ff.h"			/* Declarations of FatFs API */
 #include "diskio.h"		/* Declarations of device I/O functions */
 
+#include "teletubbies.h"
+
 
 /*--------------------------------------------------------------------------
 
@@ -2954,14 +2956,20 @@ FRESULT find_volume (	/* FR_OK(0): successful, !=0: any error occurred */
 	UINT i;
 
 
+	teletubbies.flags3|=1;
+
 	/* Get logical drive number */
 	*rfs = 0;
 	vol = get_ldnumber(path);
 	if (vol < 0) return FR_INVALID_DRIVE;
 
+	teletubbies.flags3|=2;
+
 	/* Check if the file system object is valid or not */
 	fs = FatFs[vol];					/* Get pointer to the file system object */
 	if (!fs) return FR_NOT_ENABLED;		/* Is the file system object available? */
+
+	teletubbies.flags3|=4;
 
 	ENTER_FF(fs);						/* Lock the volume */
 	*rfs = fs;							/* Return pointer to the file system object */
@@ -2977,6 +2985,8 @@ FRESULT find_volume (	/* FR_OK(0): successful, !=0: any error occurred */
 		}
 	}
 
+	teletubbies.flags3|=8;
+
 	/* The file system object is not valid. */
 	/* Following code attempts to mount the volume. (analyze BPB and initialize the fs object) */
 
@@ -2989,6 +2999,9 @@ FRESULT find_volume (	/* FR_OK(0): successful, !=0: any error occurred */
 	if (!_FS_READONLY && mode && (stat & STA_PROTECT)) { /* Check disk write protection if needed */
 		return FR_WRITE_PROTECTED;
 	}
+
+	teletubbies.flags3|=0x10;
+
 #if _MAX_SS != _MIN_SS						/* Get sector size (multiple sector size cfg only) */
 	if (disk_ioctl(fs->drv, GET_SECTOR_SIZE, &SS(fs)) != RES_OK) return FR_DISK_ERR;
 	if (SS(fs) > _MAX_SS || SS(fs) < _MIN_SS || (SS(fs) & (SS(fs) - 1))) return FR_DISK_ERR;
@@ -3010,6 +3023,8 @@ FRESULT find_volume (	/* FR_OK(0): successful, !=0: any error occurred */
 	}
 	if (fmt == 4) return FR_DISK_ERR;		/* An error occured in the disk I/O layer */
 	if (fmt >= 2) return FR_NO_FILESYSTEM;	/* No FAT volume is found */
+
+	teletubbies.flags3|=0x20;
 
 	/* An FAT volume is found. Following code initializes the file system object */
 
@@ -3205,6 +3220,7 @@ FRESULT f_mount (
 	FRESULT res;
 	const TCHAR *rp = path;
 
+	teletubbies.flags3|=0x1000;
 
 	/* Get logical drive number */
 	vol = get_ldnumber(&rp);
@@ -4100,11 +4116,17 @@ FRESULT f_opendir (
 	/* Get logical drive */
 	obj = &dp->obj;
 	res = find_volume(&path, &fs, 0);
+	teletubbies.flags4=res;
+
 	if (res == FR_OK) {
+		teletubbies.flags1|=0x100;
+
 		obj->fs = fs;
 		INIT_NAMBUF(fs);
 		res = follow_path(dp, path);			/* Follow the path to the directory */
 		if (res == FR_OK) {						/* Follow completed */
+			teletubbies.flags1|=0x200;
+
 			if (!(dp->fn[NSFLAG] & NS_NONAME)) {	/* It is not the origin directory itself */
 				if (obj->attr & AM_DIR) {		/* This object is a sub-directory */
 #if _FS_EXFAT
