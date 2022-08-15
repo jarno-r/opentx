@@ -176,10 +176,10 @@ void menuAboutView(event_t event)
           int i=strlen(buf);
           buf[i]=':';
           insertNumber(buf+i+1, persistentTubbies.linenum);
+
+          lcdDrawText(ABOUT_X, 46, buf, SMLSIZE);
         }
       }
-      
-      lcdDrawText(ABOUT_X, 46, STR_ABOUT_OPENTX_5, SMLSIZE);
 
       lcdDrawText(ABOUT_X, 54, teletubbies.whatever, SMLSIZE);
 

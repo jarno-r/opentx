@@ -1,5 +1,7 @@
 ## OpenTX 2.3 fork for various fixes for Turnigy 9XR Pro
 
+**NOTE:** There's active development on this branch and it shouldn't be used.
+
 ### Fixed issues
 
 * 4-in-1 multimodule menu not working. [#8946](https://github.com/opentx/opentx/pull/8946)
