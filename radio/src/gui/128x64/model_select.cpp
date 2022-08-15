@@ -22,6 +22,8 @@
 
 #include "teletubbies.h"
 
+TUBBY_TAGFILE;
+
 #define MODELSEL_W                     LCD_W
 
 void onDeleteModelConfirm(const char * result)
@@ -38,7 +40,8 @@ void onModelSelectMenu(const char * result)
   int8_t sub = menuVerticalPosition;
 
   if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
-    teletubbies.flags5=0x1000;
+    persistentTubbies.flags1=0x1000;
+    TUBBY_TRACE;
 
     if (!g_eeGeneral.disableRssiPoweroffAlarm) {
       if (!confirmModelChange())

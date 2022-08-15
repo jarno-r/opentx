@@ -24,12 +24,21 @@
 #include "opentx.h"
 #include "timers.h"
 
+#include "teletubbies.h"
+
+TUBBY_TAGFILE;
+
 void eeLoadModel(uint8_t index)
 {
+  TUBBY_TRACE;
+
   if (index < MAX_MODELS) {
     preModelLoad();
+    TUBBY_TRACE;
 
     uint16_t size = eeLoadModelData(index);
+
+    TUBBY_TRACE;
 
 #if defined(SIMU) && defined(EEPROM_ZONE_SIZE)
     if (sizeof(uint16_t) + sizeof(g_model) > EEPROM_ZONE_SIZE) {
@@ -43,6 +52,8 @@ void eeLoadModel(uint8_t index)
     }
 #endif
 
+    TUBBY_TRACE;
+
     bool alarms = true;
     if (size < EEPROM_MIN_MODEL_SIZE) { // if not loaded a fair amount
       modelDefault(index) ;
@@ -50,7 +61,9 @@ void eeLoadModel(uint8_t index)
       alarms = false;
     }
 
+    TUBBY_TRACE;
     postModelLoad(alarms);
+    TUBBY_TRACE;
   }
 }
 
@@ -67,6 +80,8 @@ uint8_t eeFindEmptyModel(uint8_t id, bool down)
 
 void selectModel(uint8_t sub)
 {
+  TUBBY_TRACE;
+
 #if !defined(COLORLCD)
   showMessageBox(STR_LOADINGMODEL);
 #endif

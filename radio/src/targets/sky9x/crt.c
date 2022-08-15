@@ -62,6 +62,8 @@ extern uint32_t SystemInit (void) ; // __attribute__((weak));
 
 extern uint32_t Master_frequency ;
 
+void tubbyInit();
+
 /***************************************************************************/
 /*  ResetHandler                                                           */
 /*                                                                         */
@@ -113,6 +115,9 @@ void ResetHandler (void)
   	}
   	Master_frequency = m_freq ;
   }
+
+	// Initialize persistent debugging.
+  tubbyInit();
    
    /*
     * And now the main function can be called.

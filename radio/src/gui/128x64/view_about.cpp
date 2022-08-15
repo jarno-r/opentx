@@ -26,7 +26,18 @@ const unsigned char about_bmp[]  = {
 
 #include "teletubbies.h"
 
-Teletubbies teletubbies __attribute__((section(".noinit")));
+Teletubbies teletubbies;
+volatile PersistentTubbies persistentTubbies __attribute__((section(".noinit")));
+
+void tubbyInit()
+{
+  if (!IS_RESET_REASON_WATCHDOG()) {
+    memset((void*)&persistentTubbies,0,sizeof(PersistentTubbies));
+    persistentTubbies.trace_active=1;
+  } else {
+    persistentTubbies.trace_active=0;
+  }
+}
 
 void hexenNibble(char *outs, int value)
 {
@@ -45,6 +56,22 @@ void hexenWord(char *outs, int value)
 {
   hexenByte(outs, (value>>8)&0xff);
   hexenByte(outs+2, (value)&0xff);
+}
+
+char * insertNumber(char *outs, int value)
+{
+  if (value<0) {
+    *(outs++)='-';
+    return insertNumber(outs, -value);
+  }
+
+  if (value >= 10) {
+    outs=insertNumber(outs, value/10);  
+  }
+
+  *(outs++)='0'+value%10;
+  *outs=0;
+  return outs;
 }
 
 enum AboutScreens {
@@ -137,12 +164,24 @@ void menuAboutView(event_t event)
 
       {
       char str[]="XXXX XXXX";
-      hexenWord(str, teletubbies.flags5);
-      hexenWord(str+5, teletubbies.flags6);
+      hexenWord(str, persistentTubbies.flags1);
+      hexenWord(str+5, persistentTubbies.flags2);
       lcdDrawText(ABOUT_X, 38, str, SMLSIZE);
       }
 
-        lcdDrawText(ABOUT_X, 46, teletubbies.whatever, SMLSIZE);
+      {
+        char buf[1000];
+        if (persistentTubbies.filename) {
+          strcpy(buf,persistentTubbies.filename);
+          int i=strlen(buf);
+          buf[i]=':';
+          insertNumber(buf+i+1, persistentTubbies.linenum);
+        }
+      }
+      
+      lcdDrawText(ABOUT_X, 46, STR_ABOUT_OPENTX_5, SMLSIZE);
+
+      lcdDrawText(ABOUT_X, 54, teletubbies.whatever, SMLSIZE);
 
       screenDuration = 255;
       break;
