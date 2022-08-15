@@ -1,6 +1,6 @@
 ## OpenTX 2.3 fork for various fixes for Turnigy 9XR Pro
 
-**NOTE:** There's active development on this branch and it shouldn't be used.
+**NOTE:** There's active development on this branch and it shouldn't be used at the moment.
 
 ### Fixed issues
 
