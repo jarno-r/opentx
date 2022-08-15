@@ -16,6 +16,7 @@ typedef struct {
 
 typedef struct {
     int flags1,flags2;
+    size_t flags3,flags4;
     const char * filename;
     int linenum;
     int trace_active;
@@ -23,7 +24,8 @@ typedef struct {
 
 extern Teletubbies teletubbies;
 extern volatile PersistentTubbies persistentTubbies;
-extern PersistentTubbies insistentTubbies;
+
+xtern PersistentTubbies insistentTubbies;
 
 #define TUBBY_TAGFILE static const char teletubby_filename[] = __FILE__;
 #define TUBBY_TRACE do { if (persistentTubbies.trace_active) { persistentTubbies.filename = teletubby_filename; persistentTubbies.linenum = __LINE__; } } while(0)

@@ -30,13 +30,14 @@ uint8_t Spi_tx_buf[24];
 uint8_t eepromIsTransferComplete()
 {
   TUBBY_TRACE;
+  persistentTubbies.flags3=__builtin_extract_return_addr();
 
   uint8_t i=Spi_complete;
 
   persistentTubbies.flags1|=i<<8;
 
   TUBBY_TRACE;
-  
+
   return i;
 
   /*
