@@ -21,7 +21,7 @@
   * Longer watchdog timeout appears to reduce crashes somewhat, but sometimes it hangs and crashes
     even with 5s WD timeout.
   * Crashes seem to happen in EEPROM code.
-  * Crashes seem to happen during eepromWaitTransferComplete(), but after the IRQ has fired. Maybe IRQ messes up the return pointer on stack?
+  * Crashes seem to happen during eepromWaitTransferComplete(). The IRQ never fires.
 * Sometimes the radio crashes on startup and there's no splash screen and no audio.
 * Radio hangs on startup splash screen occasionally.
 * Radio hangs on shutdown splash screen occasionally.

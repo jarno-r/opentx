@@ -182,8 +182,8 @@ void menuAboutView(event_t event)
 
       {
       char str[]="XXXX XXXX";
-      hexenWord(str, teletubbies.flags1);
-      hexenWord(str+5, teletubbies.flags2);
+      hexenWord(str, persistentTubbies.flags5);
+      hexenWord(str+5, persistentTubbies.flags6);
       lcdDrawText(ABOUT_X, 22, str, SMLSIZE);
       }
 

@@ -27,16 +27,29 @@ TUBBY_TAGFILE;
 volatile uint8_t Spi_complete = 1;
 uint8_t Spi_tx_buf[24];
 
+void eepromWaitTransferComplete();
+
 uint8_t eepromIsTransferComplete()
 {
   TUBBY_TRACE;
-  persistentTubbies.flags3=__builtin_extract_return_addr();
+
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags3=(size_t)__builtin_return_address (0);
+    persistentTubbies.flags2 = (size_t)&eepromWaitTransferComplete;
+  }
 
   uint8_t i=Spi_complete;
 
-  persistentTubbies.flags1|=i<<8;
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags1|=i<<8;
+  }
+
 
   TUBBY_TRACE;
+
+if (persistentTubbies.trace_active) {
+  persistentTubbies.flags4=(size_t)__builtin_return_address (0);
+}
 
   return i;
 
@@ -83,11 +96,15 @@ uint32_t eepromTransmitData(uint8_t *command, uint8_t *tx, uint8_t *rx, uint32_t
   spiptr->SPI_PTCR = SPI_PTCR_RXTEN | SPI_PTCR_TXTEN; // Start transfers
 
   // Wait for things to get started, avoids early interrupt
-  persistentTubbies.flags1=0;
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags1=0;
+  }
   for (count = 0; count < 1000; count += 1) {
     if ((spiptr->SPI_SR & SPI_SR_TXEMPTY) == 0)
     {
-      persistentTubbies.flags1=1;
+        if (persistentTubbies.trace_active) {
+          persistentTubbies.flags1=1;
+        }
       break;
     }
   }
@@ -224,5 +241,8 @@ extern "C" void SPI_IRQHandler()
   (void) spiptr->SPI_SR; // Clear error flags
   spiptr->SPI_PTCR = SPI_PTCR_RXTDIS | SPI_PTCR_TXTDIS; // Stop tramsfers
   Spi_complete = 1; // Indicate completion
-  persistentTubbies.flags1|=2;
+
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags1|=2;
+  }
 }

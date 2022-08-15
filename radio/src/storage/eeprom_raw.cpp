@@ -74,8 +74,39 @@ void eepromWaitReadStatus()
 void eepromWaitTransferComplete()
 {
   TUBBY_TRACE;
-  while (!eepromIsTransferComplete()) { }
+
+  if (persistentTubbies.trace_active) {
+    if (persistentTubbies.flags5&1) persistentTubbies.flags5|=0x10;
+    persistentTubbies.flags5|=1;
+    persistentTubbies.flags5|=0x20;
+  }
+
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags6=0;
+  }
+
+  while (!eepromIsTransferComplete()) {
+
+    if (persistentTubbies.trace_active) {
+    persistentTubbies.flags6++;
+    persistentTubbies.flags6&=0x7fff;  
+    }
+
+    if (persistentTubbies.flags1&0x100) {
+      persistentTubbies.flags1|=0x800;
+    }
+  }
+
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags1|=0x200;
+    persistentTubbies.flags6=0xffff;
+  }
   TUBBY_TRACE;
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags1|=0x400;
+  }
+
+  persistentTubbies.flags5&=0xfff0;
 }
 
 void eepromEraseBlock(uint32_t address, bool blocking=true)
@@ -95,8 +126,10 @@ void eepromRead(uint8_t * buffer, size_t address, size_t size)
   // TRACE("eepromRead(%p, %d, %d)", buffer, address, size);
 
   TUBBY_TRACE;
-  persistentTubbies.flags1=address;
-  persistentTubbies.flags2=size;
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags1=address;
+    persistentTubbies.flags2=size;
+  }
 
   eepromStartRead(buffer, address, size);
 
