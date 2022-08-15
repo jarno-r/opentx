@@ -23,11 +23,16 @@ typedef struct {
 
 extern Teletubbies teletubbies;
 extern volatile PersistentTubbies persistentTubbies;
+extern PersistentTubbies insistentTubbies;
 
-#define TUBBY_TAGFILE static const char * teletubby_filename = __FILE__;
+#define TUBBY_TAGFILE static const char teletubby_filename[] = __FILE__;
 #define TUBBY_TRACE do { if (persistentTubbies.trace_active) { persistentTubbies.filename = teletubby_filename; persistentTubbies.linenum = __LINE__; } } while(0)
+//#define TUBBY_TRACE
+//#define TUBBY_TRACE do { if (insistentTubbies.trace_active) { persistentTubbies.filename = 0; insistentTubbies.linenum = __LINE__; } } while(0)
 
 void tubbyInit();
+
+void tubbyFileBuf(char *outs);
 
 #ifdef __cplusplus
 }

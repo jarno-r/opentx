@@ -40,7 +40,6 @@ void onModelSelectMenu(const char * result)
   int8_t sub = menuVerticalPosition;
 
   if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
-    persistentTubbies.flags1=0x1000;
     TUBBY_TRACE;
 
     if (!g_eeGeneral.disableRssiPoweroffAlarm) {

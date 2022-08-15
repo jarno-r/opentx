@@ -28,12 +28,19 @@ const unsigned char about_bmp[]  = {
 
 Teletubbies teletubbies;
 volatile PersistentTubbies persistentTubbies __attribute__((section(".noinit")));
+PersistentTubbies insistentTubbies;
+
+
 
 void tubbyInit()
 {
-  if (!IS_RESET_REASON_WATCHDOG()) {
+    // This resets URSTS bit, but it's not used by anything anyway.
+  uint16_t r = RSTC->RSTC_SR;
+
+  if ((r & RSTC_SR_RSTTYP) != (2 << 8)) {
     memset((void*)&persistentTubbies,0,sizeof(PersistentTubbies));
     persistentTubbies.trace_active=1;
+    insistentTubbies.trace_active=1;
   } else {
     persistentTubbies.trace_active=0;
   }
@@ -72,6 +79,31 @@ char * insertNumber(char *outs, int value)
   *(outs++)='0'+value%10;
   *outs=0;
   return outs;
+}
+
+void tubbyFileBuf(char *outs)
+{
+  strcpy(outs,"Nothing here!");
+
+  if (persistentTubbies.filename)
+  {
+    size_t i;
+    const char *findThis = "radio/src/";
+    size_t findLen = strlen(findThis);
+    for (i = 0; i < strlen(persistentTubbies.filename); i++)
+    {
+      if (strncmp(persistentTubbies.filename + i, findThis, findLen) == 0)
+      {
+        i += findLen;
+        break;
+      }
+    }
+
+    strcpy(outs, persistentTubbies.filename + i);
+    int j = strlen(outs);
+    outs[j] = ':';
+    insertNumber(outs + j + 1, persistentTubbies.linenum);
+  }
 }
 
 enum AboutScreens {
@@ -163,25 +195,25 @@ void menuAboutView(event_t event)
       }
 
       {
-      char str[]="XXXX XXXX";
+      char str[]="XXXX XXXX XXXX";
       hexenWord(str, persistentTubbies.flags1);
       hexenWord(str+5, persistentTubbies.flags2);
+      hexenWord(str+10, persistentTubbies.trace_active);
       lcdDrawText(ABOUT_X, 38, str, SMLSIZE);
       }
 
       {
         char buf[1000];
-        if (persistentTubbies.filename) {
-          strcpy(buf,persistentTubbies.filename);
-          int i=strlen(buf);
-          buf[i]=':';
-          insertNumber(buf+i+1, persistentTubbies.linenum);
+        memset(buf,0,1000);
+        tubbyFileBuf(buf);
 
-          lcdDrawText(ABOUT_X, 46, buf, SMLSIZE);
+        if (buf[0]) {
+            lcdDrawText(ABOUT_X, 46, buf, SMLSIZE);
+            lcdDrawText(ABOUT_X, 54, buf+26, SMLSIZE);
         }
       }
 
-      lcdDrawText(ABOUT_X, 54, teletubbies.whatever, SMLSIZE);
+      //lcdDrawText(ABOUT_X, 54, teletubbies.whatever, SMLSIZE);
 
       screenDuration = 255;
       break;

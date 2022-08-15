@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+#include "teletubbies.h"
+
 #if !defined(HARDWARE_TRIMS)
 struct {
   int8_t preStickIdx = -1;
@@ -672,7 +674,17 @@ void menuMainView(event_t event)
     lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR | PHASE_FLAGS);
 
     // Model Name
-    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
+    //putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
+
+    {
+        char buf[1000];
+        memset(buf,0,1000);
+        tubbyFileBuf(buf);
+        if (buf[0]) {
+          lcdDrawText(10, 2, buf, SMLSIZE);
+          lcdDrawText(10, 10, buf+22, SMLSIZE);
+        }
+    }
 
     // Main Voltage (or alarm if any)
     displayVoltageOrAlarm();

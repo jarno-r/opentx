@@ -90,6 +90,8 @@ void selectModel(uint8_t sub)
   g_eeGeneral.currModel = sub;
   storageDirty(EE_GENERAL);
   eeLoadModel(sub);
+
+  TUBBY_TRACE;
 }
 
 ModelHeader modelHeaders[MAX_MODELS];
