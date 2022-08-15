@@ -22,6 +22,7 @@
     even with 5s WD timeout.
   * Crashes seem to happen in EEPROM code.
   * Crashes seem to happen during eepromWaitTransferComplete(). The IRQ never fires.
+  * Unable to get it to crash on 2.3.7
 * Sometimes the radio crashes on startup and there's no splash screen and no audio.
 * Radio hangs on startup splash screen occasionally.
 * Radio hangs on shutdown splash screen occasionally.

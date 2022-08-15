@@ -72,7 +72,7 @@ uint32_t eepromTransmitData(uint8_t *command, uint8_t *tx, uint8_t *rx, uint32_t
   }
 
   Spi_complete = 0;
-  condition = SPI_SR_TXEMPTY;
+  condition = SPI_SR_TXEMPTY; // | 0x7f;
   spiptr->SPI_CR = 1; // Enable
   (void) spiptr->SPI_RDR; // Dump any rx data
   (void) spiptr->SPI_SR; // Clear error flags
@@ -108,6 +108,8 @@ uint32_t eepromTransmitData(uint8_t *command, uint8_t *tx, uint8_t *rx, uint32_t
       break;
     }
   }
+
+  __enable_irq(); // Does not help.
   spiptr->SPI_IER = condition;
 
   TUBBY_TRACE;
