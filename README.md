@@ -1,8 +1,5 @@
 ## OpenTX 2.3 fork for various fixes for Turnigy 9XR Pro
 
-**NOTE:** There's active development on this branch and it shouldn't be used at the moment.
-
-
 ### Fixed issues
 
 * RTC not working. [#7421](https://github.com/opentx/opentx/issues/7421)
@@ -33,7 +30,20 @@
 
 *NOTE:* On an unexpected shutdown, sdInit() is not called. Then audio does not work. This is expected behaviour. (Although maybe it should fallback to tone generator?).
 
-### Building
+### Build instructions
+
+There are complete build instructions for OpenTX here: [Step-by-step-guide-to-building-%28custom%29-OpenTX-firmware-under-Ubuntu-Linux](https://www.rcgroups.com/forums/showthread.php?3824801-Blog-1-Step-by-step-guide-to-building-%28custom%29-OpenTX-firmware-under-Ubuntu-Linux).
+
+For building just the firmware under either plain Linux (Ubuntu) or WSL in windows, first install the build tools by running the following commands:
 ````
-cmake -DDISABLE_COMPANION=ON -DSIMU_TARGET=OFF -DPCB=9XRPRO -DDEFAULT_MODE=2 -DGVARS=YES -DPPM_UNIT=US -DHELI=NO -DLUA=NO -DCMAKE_BUILD_TYPE=Release ../ && make -j`nproc` firmware
+# Install necessary tools and libraries
+sudo apt install build-essential cmake gcc lib32z1
+
+# Install the correct ARM GCC tools. 
+wget https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
+tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
+rm gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
+sudo mv gcc-arm-none-eabi-4_7-2013q3 /opt/gcc-arm-none-eabi
 ````
+
+Then run the rebuild.sh script from this repo to build 9XRPRO firmware under `build-stuff` directory.
