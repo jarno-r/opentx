@@ -39,7 +39,7 @@
   #include "flysky_ibus.h"
 #endif
 
-extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
+extern uint16_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
 
 inline bool TELEMETRY_STREAMING()
 {
@@ -53,7 +53,9 @@ enum TelemetryStates {
 };
 extern uint8_t telemetryState;
 
-constexpr uint8_t TELEMETRY_TIMEOUT10ms = 100; // 1 second
+// TODO: The original was uint8_t 100, but that is too short for 9XR Pro/4-in-1/Moblite7 Flysky (but only when disarmed, for some reason). 
+// Should this be configurable either as a build parameter or even in the UI?
+constexpr uint16_t TELEMETRY_TIMEOUT10ms = 300; // 3 seconds
 
 #define TELEMETRY_SERIAL_DEFAULT       0
 #define TELEMETRY_SERIAL_8E2           1

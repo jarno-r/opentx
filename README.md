@@ -8,9 +8,6 @@
 * RTC not working. [#7421](https://github.com/opentx/opentx/issues/7421)
 * 4-in-1 multimodule menu not working. [#8946](https://github.com/opentx/opentx/pull/8946)
 * 4-in-1 multimodule telemetry not working due to missing inversion. [#8954](https://github.com/opentx/opentx/issues/8954).
-
-### Fixing issues
-
 * FlySky AFHDS2A frequent "telemetry lost" & "telemetry recovered" warnings on Moblite7 when disarmed. (Too small `TELEMETRY_TIMEOUT10ms`.)
 
 ### To be fixed issues
