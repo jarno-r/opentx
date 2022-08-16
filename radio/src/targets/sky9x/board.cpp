@@ -390,7 +390,8 @@ void boardInit()
 
   init_SDcard();
 
-#if defined(PCBAR9X)
+// https://github.com/opentx/opentx/issues/7421
+#if defined(PCBAR9X) || defined(REVX)
   rtcInit();
 #endif
 }

@@ -24,6 +24,8 @@
 #include "timers.h"
 #include "conversions/conversions.h"
 
+#error "This is not used"
+
 uint8_t   s_write_err = 0;    // error reasons
 RlcFile   theFile;  //used for any file operation
 EeFs      eeFs;

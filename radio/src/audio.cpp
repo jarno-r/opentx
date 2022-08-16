@@ -21,6 +21,8 @@
 #include "opentx.h"
 #include <math.h>
 
+#include "teletubbies.h"
+
 extern RTOS_MUTEX_HANDLE audioMutex;
 
 const int16_t sineValues[] =
@@ -301,6 +303,8 @@ void referenceSystemAudioFiles()
       }
     }
     f_closedir(&dir);
+  } else {
+    teletubbies.flags1|=0x80;
   }
 }
 
@@ -573,8 +577,12 @@ int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
 
   if (fragment.file[1]) {
     result = f_open(&state.file, fragment.file, FA_OPEN_EXISTING | FA_READ);
+    strncpy(teletubbies.whatever, fragment.file,20);
     fragment.file[1] = 0;
     if (result == FR_OK) {
+
+      teletubbies.flags1|=1;
+
       result = f_read(&state.file, wavBuffer, RIFF_CHUNK_SIZE+8, &read);
       if (result == FR_OK && read == RIFF_CHUNK_SIZE+8 && !memcmp(wavBuffer, "RIFF", 4) && !memcmp(wavBuffer+8, "WAVEfmt ", 8)) {
         uint32_t size = *((uint32_t *)(wavBuffer+16));
@@ -607,8 +615,14 @@ int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
         }
       }
       else {
+        teletubbies.flags1|=0x4000;
+        teletubbies.flags2=result;
+
         result = FR_DENIED;
       }
+    } else {
+      teletubbies.flags1|=0x8000;
+      teletubbies.flags2=result;
     }
   }
 
@@ -983,9 +997,13 @@ void AudioQueue::flush()
 
 void audioPlay(unsigned int index, uint8_t id)
 {
+  teletubbies.flags1|=0x10;
+
   if (g_eeGeneral.beepMode >= -1) {
+    teletubbies.flags1|=0x20;
     char filename[AUDIO_FILENAME_MAXLEN+1];
     if (isAudioFileReferenced(index, filename)) {
+      teletubbies.flags1|=0x40;
       audioQueue.playFile(filename, 0, id);
     }
   }

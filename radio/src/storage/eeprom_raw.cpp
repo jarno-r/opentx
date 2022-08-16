@@ -25,6 +25,10 @@
 #include "timers.h"
 #include "conversions/conversions.h"
 
+#include "teletubbies.h"
+
+TUBBY_TAGFILE;
+
 #define EEPROM_MARK           0x84697771 /* thanks ;) */
 #define EEPROM_ZONE_SIZE      (8*1024)
 #define EEPROM_BUFFER_SIZE    256
@@ -69,7 +73,40 @@ void eepromWaitReadStatus()
 
 void eepromWaitTransferComplete()
 {
-  while (!eepromIsTransferComplete()) { }
+  TUBBY_TRACE;
+
+  if (persistentTubbies.trace_active) {
+    if (persistentTubbies.flags5&1) persistentTubbies.flags5|=0x10;
+    persistentTubbies.flags5|=1;
+    persistentTubbies.flags5|=0x20;
+  }
+
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags6=0;
+  }
+
+  while (!eepromIsTransferComplete()) {
+
+    if (persistentTubbies.trace_active) {
+    persistentTubbies.flags6++;
+    persistentTubbies.flags6&=0x7fff;  
+    }
+
+    if (persistentTubbies.flags1&0x100) {
+      persistentTubbies.flags1|=0x800;
+    }
+  }
+
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags1|=0x200;
+    persistentTubbies.flags6=0xffff;
+  }
+  TUBBY_TRACE;
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags1|=0x400;
+  }
+
+  persistentTubbies.flags5&=0xfff0;
 }
 
 void eepromEraseBlock(uint32_t address, bool blocking=true)
@@ -88,8 +125,19 @@ void eepromRead(uint8_t * buffer, size_t address, size_t size)
 {
   // TRACE("eepromRead(%p, %d, %d)", buffer, address, size);
 
+  TUBBY_TRACE;
+  if (persistentTubbies.trace_active) {
+    persistentTubbies.flags1=address;
+    persistentTubbies.flags2=size;
+  }
+
   eepromStartRead(buffer, address, size);
+
+  TUBBY_TRACE;
+
   eepromWaitTransferComplete();
+
+  TUBBY_TRACE;
 }
 
 void eepromWrite(uint8_t * buffer, size_t address, size_t size, bool blocking=true)
@@ -131,23 +179,35 @@ bool eepromOpen()
 
 uint32_t readFile(int index, uint8_t * data, uint32_t size)
 {
+  TUBBY_TRACE;
+
   if (eepromHeader.files[index].exists) {
+    TUBBY_TRACE;
     EepromFileHeader header;
     uint32_t address = eepromHeader.files[index].zoneIndex * EEPROM_ZONE_SIZE;
+
+    TUBBY_TRACE;
     eepromRead((uint8_t *)&header, address, sizeof(header));
+    TUBBY_TRACE;
+
     if (size < header.size) {
       header.size = size;
     }
     if (header.size > 0) {
+      TUBBY_TRACE;
       eepromRead(data, address + sizeof(header), header.size);
+      TUBBY_TRACE;
+
       size -= header.size;
     }
     if (size > 0) {
       memset(data + header.size, 0, size);
     }
+    TUBBY_TRACE;
     return header.size;
   }
   else {
+    TUBBY_TRACE;
     return 0;
   }
 }
