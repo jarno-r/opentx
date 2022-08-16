@@ -47,3 +47,8 @@ sudo mv gcc-arm-none-eabi-4_7-2013q3 /opt/gcc-arm-none-eabi
 ````
 
 Then run the rebuild.sh script from this repo to build 9XRPRO firmware under `build-stuff` directory.
+
+### Docker builds
+
+* [pfeerick's fork](https://github.com/pfeerick/opentx-fw-build)
+* [Original docker build project](https://github.com/vitas/opentx-docker-build)
