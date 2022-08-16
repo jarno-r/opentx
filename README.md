@@ -11,16 +11,19 @@
 
 * Audio playback often fails and requires restart to recover.
   * There might be some issues with SD card reading.
-  * Alternatively, opentx crashes.
+  * This does not appear to be due to WD crash.
 * Occasional crash when changing models. [#7772](https://github.com/opentx/opentx/issues/7772).
-  * Changing to and from a model that has External RF MULTI enabled causes this.
-  * Crashes always when turning radio on and changing from one MULTI model to another MULTI model. 
-  * Does not crash after unexpected reboot from the first crash.
-  * Longer watchdog timeout appears to reduce crashes somewhat, but sometimes it hangs and crashes
+  * Changing to and from a model that has External RF MULTI enabled causes this. Models with external RF OFF do not crash.
+  * Crashes often when turning radio on and changing from one MULTI model to another MULTI model. 
+  * Longer watchdog timeout does not prevent crashes,
     even with 5s WD timeout.
   * Crashes seem to happen in EEPROM code.
   * Crashes seem to happen during eepromWaitTransferComplete(). The IRQ never fires.
   * Unable to get it to crash on 2.3.7
+  * Bisection:
+    * Last non-crashing commit: 860b50faa (2.3.11)
+    * First crashing commit: 78dd51606 (2.3.12)
+    * Inbetween commits don't build.
 * Sometimes the radio crashes on startup and there's no splash screen and no audio.
 * Radio hangs on startup splash screen occasionally.
 * Radio hangs on shutdown splash screen occasionally.
