@@ -191,6 +191,11 @@ void telemetryWakeup()
 
 #if defined(REVX)
   uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
+
+  // Hack to get telemetry working.
+  // TODO: Figure out how `invertedSerial` above should be set.
+  requiredSerialInversion=1;
+
   if (telemetryProtocol != requiredTelemetryProtocol || serialInversion != requiredSerialInversion) {
     serialInversion = requiredSerialInversion;
     telemetryInit(requiredTelemetryProtocol);
