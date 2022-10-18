@@ -15,6 +15,7 @@ set(GHOST NO)
 add_definitions(-DHARDWARE_TRIMS)
 add_definitions(-DHARDWARE_EXTERNAL_MODULE)
 add_definitions(-DDISABLE_MULTI_UPDATE)
+add_definitions(-DTRAINER_GPIO) # This fixes 9XRPRO trainer port not working.
 
 if(PCB STREQUAL 9XRPRO)
   add_definitions(-Dat91sam3s8 -DREVX)
